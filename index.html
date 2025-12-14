@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Interactive Mind Map — Kṛṣṇa/Viṣṇu (TLC 7)</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #111834;
+        --text: #e8ecff;
+        --muted: #aab3da;
+        --border: rgba(255, 255, 255, 0.12);
+        --accent: #7aa2ff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.0));
+      }
+      header h1 { margin: 0 0 6px 0; font-size: 16px; font-weight: 650; }
+      header p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+
+      .app {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        min-height: calc(100vh - 56px);
+      }
+      aside {
+        border-right: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px;
+      }
+      main { padding: 12px; }
+
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        margin-bottom: 12px;
+      }
+      .card h2 {
+        font-size: 13px;
+        margin: 0 0 10px 0;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      button {
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.05);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      button:hover { background: rgba(255,255,255,0.08); }
+      .hint { color: var(--muted); font-size: 12px; line-height: 1.4; }
+      .small { color: var(--muted); font-size: 12px; }
+
+      textarea {
+        width: 100%;
+        min-height: 260px;
+        resize: vertical;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,0.25);
+        color: var(--text);
+        padding: 10px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .mapWrap {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+        overflow: hidden;
+        height: calc(100vh - 56px - 24px);
+      }
+      svg { width: 100%; height: 100%; display: block; }
+
+      .searchRow { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+      input[type="search"]{
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,0.25);
+        color: var(--text);
+        padding: 8px 10px;
+        font-size: 13px;
+        outline: none;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 980px) {
+        .app { grid-template-columns: 1fr; }
+        aside { border-right: none; border-bottom: 1px solid var(--border); }
+        .mapWrap { height: 70vh; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Interactive mind map (click nodes to expand/collapse)</h1>
+      <p>
+        This uses <span class="badge">Markmap</span> to render a collapsible mind map from Markdown.
+        Replace the Markdown with the exact concepts/hierarchies from your TLC 7 page text for a perfect match.
+      </p>
+    </header>
+
+    <div class="app">
+      <aside>
+        <div class="card">
+          <h2>Controls</h2>
+          <div class="row">
+            <button id="btnFit">Fit</button>
+            <button id="btnExpand">Expand all</button>
+            <button id="btnCollapse">Collapse all</button>
+            <button id="btnExport">Download SVG</button>
+          </div>
+          <div style="height:10px"></div>
+          <p class="hint">
+            Tip: Click any node in the map to collapse/expand its children. Use “Fit” after changes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>Search (highlights matches)</h2>
+          <div class="searchRow">
+            <input id="search" type="search" placeholder="e.g., 'Puruṣa', 'Nārāyaṇa', 'Manvantara'..." />
+            <button id="btnClearSearch">Clear</button>
+          </div>
+          <div style="height:8px"></div>
+          <div class="small" id="searchStatus"></div>
+        </div>
+
+        <div class="card">
+          <h2>Mind map source (Markdown)</h2>
+          <p class="hint">
+            Edit this list to match the page exactly, then click <b>Update map</b>.
+            Your edits are saved in your browser (localStorage).
+          </p>
+          <div style="height:8px"></div>
+          <textarea id="md"></textarea>
+          <div style="height:10px"></div>
+          <div class="row">
+            <button id="btnUpdate">Update map</button>
+            <button id="btnReset">Reset text</button>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="mapWrap">
+          <svg id="mindmap"></svg>
+        </div>
+      </main>
+    </div>
+
+    <!-- Markmap (mind map renderer) -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.18.9/dist/browser/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.9/dist/browser/index.min.js"></script>
+
+    <script>
+      const { Transformer, Markmap } = window.markmap;
+
+      const DEFAULT_MD = `# Kṛṣṇa / Viṣṇu — expansions, manifestations, incarnations (mind map)
+
+## Core concepts (Absolute Truth)
+- The Absolute Truth
+  - Brahman (impersonal effulgence)
+  - Paramātmā (Supersoul)
+  - Bhagavān (Supreme Person)
+    - Svayam Bhagavān: Śrī Kṛṣṇa (original source)
+
+## Energies (śakti) and living beings
+- Kṛṣṇa’s energies
+  - Internal / spiritual (antaraṅgā)
+  - External / material (bahiraṅgā)
+  - Marginal / jīva (taṭasthā)
+    - Jīvas (living beings)
+      - Vibhinnāṁśa (separated expansions)
+      - Śaktyāveśa (empowered jīvas)
+
+## Personal expansions (svāṁśa / Viṣṇu-tattva)
+- First personal expansion
+  - Balarāma
+    - Ananta/Śeṣa (service manifestation; unlimited)
+- Catur-vyūha (Mathurā/Dvārakā)
+  - Vāsudeva
+  - Saṅkarṣaṇa
+  - Pradyumna
+  - Aniruddha
+- Nārāyaṇa (Vaikuṇṭha)
+  - Innumerable Vaikuṇṭha forms
+  - 24 primary Vaikuṇṭha names (common list)
+    - Keśava
+    - Nārāyaṇa
+    - Mādhava
+    - Govinda
+    - Viṣṇu
+    - Madhusūdana
+    - Trivikrama
+    - Vāmana
+    - Śrīdhara
+    - Hṛṣīkeśa
+    - Padmanābha
+    - Dāmodara
+    - Saṅkarṣaṇa
+    - Vāsudeva
+    - Pradyumna
+    - Aniruddha
+    - Puruṣottama
+    - Adhokṣaja
+    - Nṛsiṁha
+    - Acyuta
+    - Janārdana
+    - Upendra
+    - Hari
+    - Kṛṣṇa
+- Second catur-vyūha (Vaikuṇṭha)
+  - Vāsudeva
+  - Saṅkarṣaṇa (Mahā-Saṅkarṣaṇa)
+  - Pradyumna
+  - Aniruddha
+
+## Puruṣa-avatāras (cosmic expansions)
+- Kāraṇodakaśāyī Viṣṇu (Mahā-Viṣṇu)
+  - Innumerable universes emanate
+- Garbhodakaśāyī Viṣṇu (in each universe)
+  - Brahmā born from lotus
+- Kṣīrodakaśāyī Viṣṇu
+  - Paramātmā in every heart
+  - Also present within atoms
+
+## Avatāra taxonomy (categories)
+- Līlā-avatāras (pastimes)
+  - Matsya
+  - Kūrma
+  - Varāha
+  - Nṛsiṁha
+  - Vāmana / Upendra
+  - Paraśurāma
+  - Rāmacandra
+  - Balarāma
+  - Buddha
+  - Kalki
+  - (And innumerable others)
+- Guṇa-avatāras (modes)
+  - Brahmā (rajo-guṇa)
+  - Viṣṇu (sattva-guṇa)
+  - Śiva/Rudra (tamo-guṇa)
+- Manvantara-avatāras (typical 14-name list)
+  - Yajña
+  - Vibhu
+  - Satyasena
+  - Hari
+  - Vaikuṇṭha
+  - Ajita
+  - Vāmana
+  - Sārvabhauma
+  - Ṛṣabha
+  - Viśvaksena
+  - Dharmasetu
+  - Sudhāmā
+  - Yogeśvara
+  - Bṛhadbhānu
+- Yuga-avatāras
+  - Satya-yuga: white form (meditation emphasis)
+  - Tretā-yuga: red form (yajña emphasis)
+  - Dvāpara-yuga: dark/blue form (deity worship emphasis)
+  - Kali-yuga: yellow/golden form (saṅkīrtana emphasis)
+    - (Gaudiya identification) Śrī Caitanya Mahāprabhu
+- Śaktyāveśa examples (empowered jīvas)
+  - Nārada (bhakti-śakti)
+  - Pṛthu (administrative śakti)
+  - Vyāsa (literary/jñāna śakti)
+  - Paraśurāma (mission power; also listed elsewhere)
+  - (Others per different texts)
+`;
+
+      const elMd = document.getElementById("md");
+      const svg = document.getElementById("mindmap");
+      const searchInput = document.getElementById("search");
+      const searchStatus = document.getElementById("searchStatus");
+
+      const transformer = new Transformer();
+      const mm = Markmap.create(svg, { duration: 250 });
+
+      function loadMarkdown() {
+        const saved = localStorage.getItem("mindmapMarkdown");
+        elMd.value = saved ?? DEFAULT_MD;
+      }
+
+      function saveMarkdown() {
+        localStorage.setItem("mindmapMarkdown", elMd.value);
+      }
+
+      function setFoldAll(root, foldValue) {
+        // foldValue: 1 collapses children, 0 expands
+        const walk = (node) => {
+          if (!node || !node.children) return;
+          node.payload = node.payload || {};
+          node.payload.fold = foldValue;
+          node.children.forEach(walk);
+        };
+        walk(root);
+      }
+
+      function render() {
+        const md = elMd.value;
+        const { root } = transformer.transform(md);
+        mm.setData(root);
+        mm.fit();
+        // Keep a reference for expand/collapse
+        mm.__root = root;
+        clearHighlights();
+        updateSearchStatus("");
+      }
+
+      function fit() {
+        mm.fit();
+      }
+
+      function expandAll() {
+        if (!mm.__root) return;
+        setFoldAll(mm.__root, 0);
+        mm.setData(mm.__root);
+        mm.fit();
+      }
+
+      function collapseAll() {
+        if (!mm.__root) return;
+        // Keep top-level visible, collapse below
+        setFoldAll(mm.__root, 1);
+        mm.__root.payload = mm.__root.payload || {};
+        mm.__root.payload.fold = 0;
+        mm.setData(mm.__root);
+        mm.fit();
+      }
+
+      function downloadSvg() {
+        const serializer = new XMLSerializer();
+        const source = serializer.serializeToString(svg);
+        const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "mindmap.svg";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function clearHighlights() {
+        // Markmap renders text nodes inside the SVG
+        svg.querySelectorAll("text").forEach((t) => {
+          t.style.fill = "";
+          t.style.fontWeight = "";
+          t.style.textDecoration = "";
+        });
+      }
+
+      function updateSearchStatus(msg) {
+        searchStatus.textContent = msg;
+      }
+
+      function highlight(query) {
+        clearHighlights();
+        const q = (query || "").trim().toLowerCase();
+        if (!q) {
+          updateSearchStatus("");
+          return;
+        }
+
+        let count = 0;
+        svg.querySelectorAll("text").forEach((t) => {
+          const txt = (t.textContent || "").toLowerCase();
+          if (txt.includes(q)) {
+            count += 1;
+            t.style.fill = "#7aa2ff";
+            t.style.fontWeight = "700";
+            t.style.textDecoration = "underline";
+          }
+        });
+        updateSearchStatus(count ? `Matches: ${count}` : "No matches.");
+      }
+
+      document.getElementById("btnUpdate").addEventListener("click", () => {
+        saveMarkdown();
+        render();
+      });
+
+      document.getElementById("btnReset").addEventListener("click", () => {
+        localStorage.removeItem("mindmapMarkdown");
+        loadMarkdown();
+        render();
+      });
+
+      document.getElementById("btnFit").addEventListener("click", fit);
+      document.getElementById("btnExpand").addEventListener("click", expandAll);
+      document.getElementById("btnCollapse").addEventListener("click", collapseAll);
+      document.getElementById("btnExport").addEventListener("click", downloadSvg);
+
+      document.getElementById("btnClearSearch").addEventListener("click", () => {
+        searchInput.value = "";
+        highlight("");
+      });
+
+      searchInput.addEventListener("input", (e) => {
+        highlight(e.target.value);
+      });
+
+      // Init
+      loadMarkdown();
+      render();
+    </script>
+  </body>
+</html>
