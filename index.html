@@ -1,9 +1,10 @@
+\<!-- Save as: index.html  (deploy directly with GitHub Pages) -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Interactive Mind Map — Kṛṣṇa/Viṣṇu (TLC 7)</title>
+    <title>Interactive Mind Map — TLC Chapter 7</title>
     <style>
       :root {
         --bg: #0b1020;
@@ -69,7 +70,7 @@
 
       textarea {
         width: 100%;
-        min-height: 260px;
+        min-height: 320px;
         resize: vertical;
         border-radius: 10px;
         border: 1px solid var(--border);
@@ -120,10 +121,10 @@
 
   <body>
     <header>
-      <h1>Interactive mind map (click nodes to expand/collapse)</h1>
+      <h1>CHAPTER SEVEN — Unlimited Forms of Godhead (interactive mind map)</h1>
       <p>
-        This uses <span class="badge">Markmap</span> to render a collapsible mind map from Markdown.
-        Replace the Markdown with the exact concepts/hierarchies from your TLC 7 page text for a perfect match.
+        Click nodes to expand/collapse. This uses <span class="badge">Markmap</span> to render a collapsible mind map from Markdown.
+        Your edits are saved locally in your browser.
       </p>
     </header>
 
@@ -139,14 +140,14 @@
           </div>
           <div style="height:10px"></div>
           <p class="hint">
-            Tip: Click any node in the map to collapse/expand its children. Use “Fit” after changes.
+            Tip: Click any node text in the map to collapse/expand its children. Use “Fit” after updates.
           </p>
         </div>
 
         <div class="card">
           <h2>Search (highlights matches)</h2>
           <div class="searchRow">
-            <input id="search" type="search" placeholder="e.g., 'Puruṣa', 'Nārāyaṇa', 'Manvantara'..." />
+            <input id="search" type="search" placeholder="e.g., 'Keśava', 'Vaikuṇṭha', 'puruṣa-avatāra'..." />
             <button id="btnClearSearch">Clear</button>
           </div>
           <div style="height:8px"></div>
@@ -156,8 +157,8 @@
         <div class="card">
           <h2>Mind map source (Markdown)</h2>
           <p class="hint">
-            Edit this list to match the page exactly, then click <b>Update map</b>.
-            Your edits are saved in your browser (localStorage).
+            This is the TLC Chapter 7 structure you provided. You can edit it if you want a different grouping.
+            Click <b>Update map</b> to re-render.
           </p>
           <div style="height:8px"></div>
           <textarea id="md"></textarea>
@@ -184,119 +185,316 @@
     <script>
       const { Transformer, Markmap } = window.markmap;
 
-      const DEFAULT_MD = `# Kṛṣṇa / Viṣṇu — expansions, manifestations, incarnations (mind map)
+      const DEFAULT_MD = `# CHAPTER SEVEN — Unlimited Forms of Godhead
 
-## Core concepts (Absolute Truth)
-- The Absolute Truth
-  - Brahman (impersonal effulgence)
-  - Paramātmā (Supersoul)
-  - Bhagavān (Supreme Person)
-    - Svayam Bhagavān: Śrī Kṛṣṇa (original source)
+## Vaiṣṇava almanac: 12 months named for 12 Vaikuṇṭha forms
+- Calendar starts with **Mārgaśīrṣa** (late Nov–early Dec) = **Keśava**
+- **Dec–Jan** = **Nārāyaṇa**
+- **Jan–Feb** = **Mādhava**
+- **Feb–Mar** = **Govinda**
+- **Mar–Apr** = **Viṣṇu**
+- **Apr–May** = **Śrī Madhusūdana**
+- **May–Jun** = **Trivikrama**
+- **Jun–Jul** = **Vāmana**
+- **Jul–Aug** = **Śrīdhara**
+- **Aug–Sep** = **Hṛṣīkeśa**
+- **Sep–Oct** = **Padmanābha**
+- **Oct–Nov** = **Dāmodara**
+  - Note: this **Dāmodara** (month-Deity) is **different** from **Dāmodara in Vraja** (Kṛṣṇa bound by ropes by His mother)
 
-## Energies (śakti) and living beings
-- Kṛṣṇa’s energies
-  - Internal / spiritual (antaraṅgā)
-  - External / material (bahiraṅgā)
-  - Marginal / jīva (taṭasthā)
-    - Jīvas (living beings)
-      - Vibhinnāṁśa (separated expansions)
-      - Śaktyāveśa (empowered jīvas)
+## Body tilaka: 12 names mapped to 12 parts of the body
+- Forehead tilaka = **Keśava**
+- Stomach/chest/arms etc. = the **other 11 names**
+- Same set of names as the 12 months
 
-## Personal expansions (svāṁśa / Viṣṇu-tattva)
-- First personal expansion
-  - Balarāma
-    - Ananta/Śeṣa (service manifestation; unlimited)
-- Catur-vyūha (Mathurā/Dvārakā)
-  - Vāsudeva
-  - Saṅkarṣaṇa
-  - Pradyumna
-  - Aniruddha
-- Nārāyaṇa (Vaikuṇṭha)
-  - Innumerable Vaikuṇṭha forms
-  - 24 primary Vaikuṇṭha names (common list)
-    - Keśava
-    - Nārāyaṇa
-    - Mādhava
-    - Govinda
-    - Viṣṇu
-    - Madhusūdana
-    - Trivikrama
-    - Vāmana
-    - Śrīdhara
-    - Hṛṣīkeśa
-    - Padmanābha
-    - Dāmodara
-    - Saṅkarṣaṇa
-    - Vāsudeva
-    - Pradyumna
-    - Aniruddha
-    - Puruṣottama
-    - Adhokṣaja
-    - Nṛsiṁha
-    - Acyuta
-    - Janārdana
-    - Upendra
-    - Hari
-    - Kṛṣṇa
-- Second catur-vyūha (Vaikuṇṭha)
-  - Vāsudeva
-  - Saṅkarṣaṇa (Mahā-Saṅkarṣaṇa)
-  - Pradyumna
-  - Aniruddha
+## The 24 Viṣṇu forms (vilāsa manifestations)
+- Defined as:
+  - **4 original Viṣṇu forms** (prābhava-vilāsa)
+  - **12 Vaikuṇṭha forms** (month-Deities)
+  - **8 additional vilāsa-mūrtis** (from expansions)
+- Named/identified by **positions of the four symbols**:
+  - mace/club (**gadā**)
+  - disc (**cakra**)
+  - lotus (**padma**)
+  - conch (**śaṅkha**)
+- 24 forms are vilāsa manifestations of the **prābhava (four-handed) form**
+- All have **Vaikuṇṭha planets** in the spiritual sky
+  - situated in **eight different directions**
+  - each resides eternally, yet **some appear in the material world also**
 
-## Puruṣa-avatāras (cosmic expansions)
-- Kāraṇodakaśāyī Viṣṇu (Mahā-Viṣṇu)
-  - Innumerable universes emanate
-- Garbhodakaśāyī Viṣṇu (in each universe)
-  - Brahmā born from lotus
-- Kṣīrodakaśāyī Viṣṇu
-  - Paramātmā in every heart
-  - Also present within atoms
+### The 4 original Viṣṇu forms (prābhava-vilāsa)
+- **Vāsudeva**
+- **Saṅkarṣaṇa**
+- **Pradyumna**
+- **Aniruddha**
 
-## Avatāra taxonomy (categories)
-- Līlā-avatāras (pastimes)
-  - Matsya
-  - Kūrma
-  - Varāha
-  - Nṛsiṁha
-  - Vāmana / Upendra
-  - Paraśurāma
-  - Rāmacandra
-  - Balarāma
-  - Buddha
-  - Kalki
-  - (And innumerable others)
-- Guṇa-avatāras (modes)
-  - Brahmā (rajo-guṇa)
-  - Viṣṇu (sattva-guṇa)
-  - Śiva/Rudra (tamo-guṇa)
-- Manvantara-avatāras (typical 14-name list)
-  - Yajña
-  - Vibhu
-  - Satyasena
-  - Hari
-  - Vaikuṇṭha
-  - Ajita
-  - Vāmana
-  - Sārvabhauma
-  - Ṛṣabha
-  - Viśvaksena
-  - Dharmasetu
-  - Sudhāmā
-  - Yogeśvara
-  - Bṛhadbhānu
-- Yuga-avatāras
-  - Satya-yuga: white form (meditation emphasis)
-  - Tretā-yuga: red form (yajña emphasis)
-  - Dvāpara-yuga: dark/blue form (deity worship emphasis)
-  - Kali-yuga: yellow/golden form (saṅkīrtana emphasis)
-    - (Gaudiya identification) Śrī Caitanya Mahāprabhu
-- Śaktyāveśa examples (empowered jīvas)
-  - Nārada (bhakti-śakti)
-  - Pṛthu (administrative śakti)
-  - Vyāsa (literary/jñāna śakti)
-  - Paraśurāma (mission power; also listed elsewhere)
-  - (Others per different texts)
+### The 8 additional vilāsa-mūrtis (expanded from the 4)
+- Names:
+  - **Puruṣottama**
+  - **Acyuta**
+  - **Nṛsiṁha**
+  - **Janārdana**
+  - **Hari**
+  - **Kṛṣṇa** (note: different from the original Kṛṣṇa)
+  - **Adhokṣaja**
+  - **Upendra**
+- Which comes from which (vilāsa relationships)
+  - From **Vāsudeva**:
+    - **Adhokṣaja**
+    - **Puruṣottama**
+  - From **Saṅkarṣaṇa**:
+    - **Upendra**
+    - **Acyuta**
+  - From **Pradyumna**:
+    - **Nṛsiṁha**
+    - **Janārdana**
+  - From **Aniruddha**:
+    - **Hari**
+    - **Kṛṣṇa** (non-original)
+- Note on vaibhava among the 24
+  - Examples stated: **Pradyumna, Trivikrama, Vāmana, Hari, Kṛṣṇa** (non-original)
+
+### The 12 Vaikuṇṭha forms (predominating Deities of months)
+- **Keśava**
+- **Nārāyaṇa**
+- **Mādhava**
+- **Govinda**
+- **Viṣṇu**
+- **Madhusūdana**
+- **Trivikrama**
+- **Vāmana**
+- **Śrīdhara**
+- **Hṛṣīkeśa**
+- **Padmanābha**
+- **Dāmodara**
+
+## Spiritual sky structure + earthly placements of forms
+- All planets dominated by the **Nārāyaṇa feature** are eternal
+- Topmost planet: **Kṛṣṇaloka**
+  - divided into 3 portions:
+    - **Gokula**
+    - **Mathurā**
+    - **Dvārakā**
+  - In **Mathurā portion**: **Keśava** always situated
+    - On earth: **Keśava mūrti** worshiped in **Mathurā, India**
+- Earthly examples of installed forms
+  - **Puruṣottama** in **Jagannātha Purī (Orissa)**
+  - **Viṣṇu** in **Ānandāraṇya**
+  - **Hari** in **Māyāpur** (birthplace of Lord Caitanya)
+  - Many other forms in various places on the earth
+
+## Distribution across universes + purpose of incarnations
+- Forms distributed not only in this universe but in **all universes**
+- Earth described as **seven islands** (seven continents)
+  - Similar forms on every island
+  - At present: these are found **only in India** (no current location info elsewhere)
+- Purpose
+  - to give **pleasure to devotees** (devotees exist worldwide; identity forgotten)
+  - to **reestablish devotional service**
+  - other activities concerning the Supreme Personality of Godhead
+  - some are scriptural incarnations:
+    - **Viṣṇu**
+    - **Trivikrama**
+    - **Nṛsiṁha**
+    - **Vāmana**
+
+## Siddhārtha-saṁhitā: symbol positions define the 24 forms
+- Rule for reading hand-symbol order:
+  - lower right → upper right → upper left → lower left
+- Symbol sequences for the 4 original forms
+  - **Vāsudeva**: club, conch, disc, lotus
+  - **Saṅkarṣaṇa**: club, conch, lotus, disc
+  - **Pradyumna**: disc, conch, club, lotus
+  - **Aniruddha**: disc, club, conch, lotus
+- 20 Nārāyaṇa-feature forms listed with symbol positions
+  - **Śrī Keśava**: lotus, conch, disc, club
+  - **Nārāyaṇa**: conch, lotus, club, disc
+  - **Śrī Mādhava**: club, disc, conch, lotus
+  - **Śrī Govinda**: disc, club, lotus, conch
+  - **Viṣṇu-mūrti**: club, lotus, conch, disc
+  - **Madhusūdana**: disc, conch, lotus, club
+  - **Trivikrama**: lotus, club, disc, conch
+  - **Śrī Vāmana**: conch, disc, club, lotus
+  - **Śrīdhara**: lotus, disc, club, conch
+  - **Hṛṣīkeśa**: club, disc, lotus, conch
+  - **Padmanābha**: conch, lotus, disc, club
+  - **Dāmodara**: lotus, disc, club, conch
+  - **Puruṣottama**: disc, lotus, conch, club
+  - **Acyuta**: club, lotus, disc, conch
+  - **Nṛsiṁha**: disc, lotus, club, conch
+  - **Janārdana**: lotus, disc, conch, club
+  - **Śrī Hari**: conch, disc, lotus, club
+  - **Śrī Kṛṣṇa**: conch, club, lotus, disc
+  - **Adhokṣaja**: lotus, club, conch, disc
+  - **Upendra**: conch, club, disc, lotus
+
+## Hayaśīrṣa Pañcarātra: other enumerations + conclusions
+- **16 forms** described (named by disc etc. positions)
+- Conclusion: Original Supreme Personality of Godhead is **Kṛṣṇa**
+  - called **līlā-puruṣottama**
+  - resides principally in **Vṛndāvana** as the **son of Nanda**
+- Nine forms protecting the two Purīs
+  - Purīs: **Mathurā Purī** and **Dvārakā Purī**
+  - Protecting forms:
+    - **Vāsudeva**
+    - **Saṅkarṣaṇa**
+    - **Pradyumna**
+    - **Aniruddha**
+    - **Nārāyaṇa**
+    - **Nṛsiṁha**
+    - **Hayagrīva**
+    - **Varāha**
+    - **Brahmā**
+  - These are manifestations of **prakāśa** and **vilāsa** forms of Lord Kṛṣṇa
+
+## Svāṁśa forms taught by Lord Caitanya: two divisions
+- **Saṅkarṣaṇa division**
+  - Includes the **3 puruṣa-avatāras**:
+    - **Kāraṇodaka-śāyī Viṣṇu** (Mahā-Viṣṇu)
+    - **Garbhodaka-śāyī Viṣṇu**
+    - **Kṣīrodaka-śāyī Viṣṇu**
+- **Incarnation division**
+  - Includes **līlā-avatāras**
+    - examples: fish, tortoise (Matsya, Kūrma)
+
+## Six kinds of incarnations (avatāras)
+1. **Puruṣa-avatāras**
+2. **Līlā-avatāras**
+3. **Guṇa-avatāras**
+4. **Manvantara-avatāras**
+5. **Yuga-avatāras**
+6. **Śaktyāveśa-avatāras**
+
+## Vilāsa manifestations of Kṛṣṇa by age (two divisions)
+- **Bālya** (childhood)
+- **Paugaṇḍa** (later childhood)
+- Original Kṛṣṇa (son of Nanda) enjoys both aspects
+
+## Unlimited expansions (scriptural confirmation)
+- Lord Caitanya described some expansions to give an idea of how the Lord expands and enjoys
+- Śrīmad-Bhāgavatam $1.3.26$: incarnations unlimited like **waves of the ocean**
+
+## Puruṣa-avatāras first (Sātvata-tantra confirmation)
+- Kṛṣṇa first incarnates as:
+  - **Mahā-Viṣṇu / Kāraṇodaka-śāyī**
+  - **Garbhodaka-śāyī**
+  - **Kṣīrodaka-śāyī**
+
+## Three functional energies (thinking/feeling/acting) and their forms
+- Kṛṣṇa’s energies can be divided into:
+  - energy of **thinking**
+  - energy of **feeling**
+  - energy of **acting**
+- When He exhibits:
+  - **thinking energy**: He is the **Supreme Lord**
+  - **feeling energy**: He is **Lord Vāsudeva**
+  - **acting energy**: He is **Saṅkarṣaṇa Balarāma**
+- Without thinking/feeling/acting there is no possibility of creation
+- Both spiritual and material worlds are manifestations of the Lord’s **acting energy**
+  - carried out in the form of **Saṅkarṣaṇa Balarāma**
+
+## Spiritual vs material manifestation (Brahma-saṁhitā $5.2$ + māyā discussion)
+- Spiritual world (Vaikuṇṭha planets + Kṛṣṇaloka) situated in the Lord’s **thinking energy**
+  - no material-style creation, yet spiritual planets depend on thinking energy
+- Brahma-saṁhitā $5.2$:
+  - Goloka manifested like a lotus with hundreds of petals
+  - everything manifested by **Ananta** (a form of Balarāma/Saṅkarṣaṇa)
+- Material cosmic manifestation appears through **māyā** (material energy)
+  - do not think material nature is the cause
+  - creation is caused by the Supreme Lord acting through expansions
+  - no creation without superintendence of the Supreme Lord
+  - superintendent form for material creation: **Saṅkarṣaṇa**
+  - analogy: iron becomes red hot in contact with fire and acts like fire
+
+## Balarāma and Kṛṣṇa: origin of all living entities (Śrīmad-Bhāgavatam $10.46.31$)
+- Balarāma and Kṛṣṇa are the origin of all living entities
+- These two personalities enter into everything
+
+## Śrīmad-Bhāgavatam $1.3$: 25 līlā-avatāras (kalpa-avatāras)
+- List (25)
+  1. **Kumāras (Catuḥsana)**
+  2. **Nārada**
+  3. **Varāha**
+  4. **Matsya**
+  5. **Yajña**
+  6. **Nara-Nārāyaṇa**
+  7. **Kārdami Kapila**
+  8. **Dattātreya**
+  9. **Hayaśīrṣa**
+  10. **Haṁsa**
+  11. **Dhruvapriya / Pṛśnigarbha**
+  12. **Ṛṣabha**
+  13. **Pṛthu**
+  14. **Nṛsiṁha**
+  15. **Kūrma**
+  16. **Dhanvantari**
+  17. **Mohinī**
+  18. **Vāmana**
+  19. **Bhārgava (Paraśurāma)**
+  20. **Rāghavendra (Rāma)**
+  21. **Vyāsa**
+  22. **Pralambāri Balarāma**
+  23. **Kṛṣṇa**
+  24. **Buddha**
+  25. **Kalki**
+- Why “kalpa-avatāras”
+  - almost all appear in one **day of Brahmā** (a **kalpa**)
+- Permanence / prominence
+  - Not permanent: **Haṁsa**, **Mohinī**
+  - Five eternal and more celebrated:
+    - **Kapila**
+    - **Dattātreya**
+    - **Ṛṣabha**
+    - **Dhanvantari**
+    - **Vyāsa**
+- Vaibhava incarnations (noted)
+  - **Kūrma**
+  - **Matsya**
+  - **Nara-Nārāyaṇa**
+  - **Varāha**
+  - **Hayaśīrṣa**
+  - **Pṛśnigarbha**
+  - **Balarāma**
+- Guṇa-avatāras (modes of nature)
+  - **Brahmā**
+  - **Viṣṇu**
+  - **Śiva**
+
+## 14 manvantara-avatāras (also called vaibhava-avatāras)
+- List (14)
+  1. **Yajña**
+  2. **Vibhu**
+  3. **Satyasena**
+  4. **Hari**
+  5. **Vaikuṇṭha**
+  6. **Ajita**
+  7. **Vāmana**
+  8. **Sārvabhauma**
+  9. **Ṛṣabha**
+  10. **Viṣvaksena**
+  11. **Dharmasetu**
+  12. **Sudhāmā**
+  13. **Yogeśvara**
+  14. **Bṛhadbhānu**
+- Overlap note
+  - **Yajña** and **Vāmana** are also **līlā-avatāras**
+
+## 4 yuga-avatāras (colors by yuga)
+- **Satya-yuga**: white
+- **Tretā-yuga**: red
+- **Dvāpara-yuga**: blackish
+- **Kali-yuga**: blackish
+  - special Kali-yuga: yellowish (example: **Caitanya Mahāprabhu**)
+
+## Śaktyāveśa-avatāras (empowered incarnations)
+- **Kapila**
+- **Ṛṣabha**
+- **Ananta**
+- **Brahmā** (sometimes the Lord Himself becomes Brahmā)
+- **Catuḥsana / Kumāras** (incarnation of knowledge)
+- **Nārada** (incarnation of devotional service)
+- **King Pṛthu** (incarnation of administrative power)
+- **Paraśurāma** (incarnation who subdues evil principles)
 `;
 
       const elMd = document.getElementById("md");
@@ -332,15 +530,12 @@
         const { root } = transformer.transform(md);
         mm.setData(root);
         mm.fit();
-        // Keep a reference for expand/collapse
-        mm.__root = root;
+        mm.__root = root; // store for expand/collapse
         clearHighlights();
         updateSearchStatus("");
       }
 
-      function fit() {
-        mm.fit();
-      }
+      function fit() { mm.fit(); }
 
       function expandAll() {
         if (!mm.__root) return;
@@ -351,7 +546,6 @@
 
       function collapseAll() {
         if (!mm.__root) return;
-        // Keep top-level visible, collapse below
         setFoldAll(mm.__root, 1);
         mm.__root.payload = mm.__root.payload || {};
         mm.__root.payload.fold = 0;
@@ -367,7 +561,7 @@
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = "mindmap.svg";
+        a.download = "tlc7-mindmap.svg";
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -375,7 +569,6 @@
       }
 
       function clearHighlights() {
-        // Markmap renders text nodes inside the SVG
         svg.querySelectorAll("text").forEach((t) => {
           t.style.fill = "";
           t.style.fontWeight = "";
