@@ -1,0 +1,1121 @@
+<!-- Save as: index.html  (GitHub Pages-ready)
+     Responsive, multi-row wrap "relationship cards" (org-chart-ish), with:
+     - clear top-level groupings
+     - expandable details per card
+     - "Related" chips that jump + highlight
+     - tag-based filtering + search
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TLC Ch. 7 — Unlimited Forms of Godhead (Relationship Cards)</title>
+    <style>
+      :root{
+        --bg:#0b1020;
+        --panel:#0f1633;
+        --card:rgba(255,255,255,.04);
+        --text:#e8ecff;
+        --muted:#aab3da;
+        --border:rgba(255,255,255,.12);
+        --accent:#7aa2ff;
+        --accent2:#86efac;
+        --warn:#fbbf24;
+        --shadow: 0 10px 30px rgba(0,0,0,.35);
+        --ring: 0 0 0 3px rgba(122,162,255,.14);
+      }
+      *{box-sizing:border-box}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background:
+          radial-gradient(1200px 700px at 20% 10%, rgba(122,162,255,.10), transparent 60%),
+          radial-gradient(900px 600px at 80% 0%, rgba(255,255,255,.06), transparent 55%),
+          var(--bg);
+        color:var(--text);
+      }
+
+      header{
+        position:sticky;
+        top:0;
+        z-index:50;
+        padding:12px 14px;
+        background: rgba(11,16,32,.86);
+        backdrop-filter: blur(10px);
+        border-bottom:1px solid var(--border);
+      }
+      header .top{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:12px;
+        flex-wrap:wrap;
+      }
+      header h1{
+        margin:0;
+        font-size:15px;
+        font-weight:800;
+        letter-spacing:.2px;
+      }
+      header p{
+        margin:6px 0 0 0;
+        color:var(--muted);
+        font-size:12.5px;
+        line-height:1.35;
+        max-width: 68ch;
+      }
+
+      .toolbar{
+        display:flex;
+        gap:8px;
+        align-items:center;
+        flex-wrap:wrap;
+      }
+      .toolbar input[type="search"]{
+        width:min(520px, 88vw);
+        padding:9px 10px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        background: rgba(255,255,255,.03);
+        color:var(--text);
+        outline:none;
+        font-size:13px;
+      }
+      .btn{
+        padding:9px 10px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        background: rgba(255,255,255,.04);
+        color:var(--text);
+        cursor:pointer;
+        font-size:13px;
+      }
+      .btn:hover{ background: rgba(255,255,255,.07); }
+      .btn.primary{
+        border-color: rgba(122,162,255,.45);
+        background: rgba(122,162,255,.12);
+      }
+      .btn.primary:hover{ background: rgba(122,162,255,.16); }
+
+      main{
+        display:grid;
+        grid-template-columns: 280px 1fr;
+        gap: 14px;
+        padding:14px;
+        align-items:start;
+      }
+
+      /* Sidebar */
+      nav{
+        position:sticky;
+        top:72px;
+        border:1px solid var(--border);
+        background: rgba(255,255,255,.03);
+        border-radius: 14px;
+        padding: 12px;
+      }
+      nav .label{
+        font-size:12px;
+        color:var(--muted);
+        font-weight:700;
+        margin-bottom:8px;
+      }
+      nav a{
+        display:block;
+        padding:8px 10px;
+        border-radius:10px;
+        color:var(--text);
+        text-decoration:none;
+        border:1px solid transparent;
+        font-size:13px;
+      }
+      nav a:hover{
+        background: rgba(255,255,255,.05);
+        border-color: rgba(255,255,255,.10);
+      }
+      .note{
+        margin-top:10px;
+        padding:10px;
+        border: 1px solid rgba(251,191,36,.25);
+        background: rgba(251,191,36,.06);
+        border-radius: 12px;
+        font-size:12px;
+        color: var(--muted);
+        line-height:1.4;
+      }
+
+      /* Sections + cards */
+      section{
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.02);
+        border-radius: 16px;
+        padding: 12px;
+        margin-bottom: 14px;
+      }
+      section h2{
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing:.2px;
+      }
+      section .sectionMeta{
+        margin: 0 0 12px 0;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.35;
+        max-width: 90ch;
+      }
+      .grid{
+        display:flex;
+        flex-wrap:wrap;               /* multi-row wrap */
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .card{
+        flex: 1 1 320px;
+        min-width: 280px;
+        max-width: 520px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        box-shadow: var(--shadow);
+        position:relative;
+      }
+      .cardHeader{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:10px;
+      }
+      .title{
+        font-weight: 850;
+        font-size: 13.5px;
+        line-height: 1.25;
+        margin: 0;
+      }
+      .summary{
+        margin: 6px 0 10px 0;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.35;
+      }
+
+      .chips{
+        display:flex;
+        flex-wrap:wrap;
+        gap:6px;
+        margin: 8px 0 0 0;
+      }
+      .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.03);
+        color: var(--muted);
+        font-size: 12px;
+        cursor:pointer;
+        user-select:none;
+      }
+      .chip:hover{ background: rgba(255,255,255,.06); }
+      .chip.tag{
+        border-color: rgba(122,162,255,.25);
+      }
+      .chip.rel{
+        border-color: rgba(134,239,172,.22);
+      }
+
+      details{
+        margin-top: 10px;
+        border-top: 1px dashed rgba(255,255,255,.12);
+        padding-top: 10px;
+      }
+      details summary{
+        cursor:pointer;
+        color: var(--text);
+        font-size: 12.5px;
+        font-weight: 750;
+        list-style: none;
+      }
+      details summary::-webkit-details-marker{ display:none; }
+      .detailsBody{
+        margin-top: 8px;
+        color: var(--text);
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+      .detailsBody ul{
+        margin: 6px 0 0 18px;
+        padding:0;
+      }
+      .detailsBody li{ margin: 4px 0; color: var(--muted); }
+      .detailsBody strong{ color: var(--text); }
+
+      /* State */
+      .hidden{ display:none !important; }
+      .hit{
+        border-color: rgba(122,162,255,.55) !important;
+        box-shadow: var(--ring), var(--shadow) !important;
+      }
+      .focused{
+        outline: 2px solid rgba(134,239,172,.45);
+        outline-offset: 2px;
+      }
+
+      .activeFilters{
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 980px){
+        main{ grid-template-columns: 1fr; }
+        nav{ position:relative; top:auto; }
+        .card{ max-width: none; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="top">
+        <div>
+          <h1>TLC Chapter 7 — Unlimited Forms of Godhead (easy relationship view)</h1>
+          <p>
+            This layout groups the chapter into a few “relationship hubs” (naming systems → 24 forms → scriptures → avatāra framework → lists → cosmology & purpose).
+            Click <strong>Details</strong> to expand, click <strong>Related</strong> chips to jump.
+          </p>
+          <div class="activeFilters" id="activeFilters"></div>
+        </div>
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search (e.g., Keśava, 24, Siddhārtha, puruṣa, manvantara, Caitanya)..." />
+          <button class="btn" id="expandAll">Open all details</button>
+          <button class="btn" id="collapseAll">Close all details</button>
+          <button class="btn primary" id="clearAll">Clear filters</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <nav>
+        <div class="label">Sections</div>
+        <a href="#naming">1) Naming systems</a>
+        <a href="#forms24">2) The 24 forms “architecture”</a>
+        <a href="#scriptures">3) Scriptures & enumerations</a>
+        <a href="#framework">4) Expansion/avatāra framework</a>
+        <a href="#lists">5) Big lists (SB 1.3 etc.)</a>
+        <a href="#cosmology">6) Cosmology, distribution, purpose</a>
+        <div class="note">
+          Tip: click a <strong>tag chip</strong> (e.g., “24-forms”, “months”, “SB 1.3”) to filter related cards.
+          Click again to remove.
+        </div>
+      </nav>
+
+      <div>
+        <section id="naming">
+          <h2>1) Naming systems (how devotees “index” the forms)</h2>
+          <p class="sectionMeta">
+            The chapter starts with two everyday indexing systems that reuse the same 12 names: the Vaiṣṇava calendar months and body tilaka positions.
+          </p>
+          <div class="grid" id="sec-naming"></div>
+        </section>
+
+        <section id="forms24">
+          <h2>2) The 24 forms “architecture” (4 + 12 + 8)</h2>
+          <p class="sectionMeta">
+            Central relationship: the “24 forms of Viṣṇu” are built from the 4 original forms, the 12 Vaikuṇṭha month-forms, and 8 additional vilāsa-mūrtis.
+            Distinctions: prābhava-vilāsa vs vaibhava (some have different features); identification by hand-symbol positions.
+          </p>
+          <div class="grid" id="sec-forms24"></div>
+        </section>
+
+        <section id="scriptures">
+          <h2>3) Scriptures & enumerations (how symbol-positions and protections are described)</h2>
+          <p class="sectionMeta">
+            Siddhārtha-saṁhitā provides the hand-symbol reading order and sequences; Hayaśīrṣa Pañcarātra mentions 16 forms and the 9 protectors of Mathurā/Dvārakā Purīs,
+            and states the conclusion about original Kṛṣṇa as līlā-puruṣottama.
+          </p>
+          <div class="grid" id="sec-scriptures"></div>
+        </section>
+
+        <section id="framework">
+          <h2>4) Expansion/avatāra framework (how categories relate)</h2>
+          <p class="sectionMeta">
+            Lord Caitanya explains svāṁśa divisions: Saṅkarṣaṇa division (including the 3 puruṣa-avatāras) and the incarnation division (līlā-avatāras).
+            Then the chapter names 6 avatāra categories.
+          </p>
+          <div class="grid" id="sec-framework"></div>
+        </section>
+
+        <section id="lists">
+          <h2>5) Big lists (SB 1.3; manvantara; yuga; śaktyāveśa; guṇa)</h2>
+          <p class="sectionMeta">
+            The chapter cites Śrīmad-Bhāgavatam lists and then classifies: kalpa-avatāras, permanent vs non-permanent, five eternal forms, vaibhava notes,
+            plus 14 manvantara-avatāras, 4 yuga-avatāras (colors), and śaktyāveśa examples.
+          </p>
+          <div class="grid" id="sec-lists"></div>
+        </section>
+
+        <section id="cosmology">
+          <h2>6) Cosmology, distribution, purpose, and energies</h2>
+          <p class="sectionMeta">
+            Relationships here: Kṛṣṇaloka structure (Gokula/Mathurā/Dvārakā), installed forms on earth, distribution across universes for devotees,
+            and the “thinking/feeling/acting” energy model tied to Vāsudeva and Saṅkarṣaṇa Balarāma. Includes Brahma-saṁhitā 5.2 and the “iron/fire” analogy.
+          </p>
+          <div class="grid" id="sec-cosmology"></div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // ========= Content model =========
+      // Each card has:
+      // - id: unique
+      // - title/summary
+      // - tags: used for filtering
+      // - related: ids of cards that explain connected ideas
+      // - detailsHTML: expanded bullet lists (kept as HTML for clarity)
+
+      const CARDS = [
+        // 1) Naming systems
+        {
+          section: "naming",
+          id: "months12",
+          title: "12 months ↔ 12 Vaikuṇṭha forms (predominating Deities)",
+          summary: "The Vaiṣṇava calendar names each month after one Vaikuṇṭha form, starting with Mārgaśīrṣa = Keśava.",
+          tags: ["months", "12-names", "vaikuntha-forms"],
+          related: ["tilaka12", "forms24-hub", "keśava-earth"],
+          detailsHTML: `
+            <ul>
+              <li><strong>Mārgaśīrṣa</strong> (late Nov–early Dec): <strong>Keśava</strong></li>
+              <li>Dec–Jan: <strong>Nārāyaṇa</strong></li>
+              <li>Jan–Feb: <strong>Mādhava</strong></li>
+              <li>Feb–Mar: <strong>Govinda</strong></li>
+              <li>Mar–Apr: <strong>Viṣṇu</strong></li>
+              <li>Apr–May: <strong>Śrī Madhusūdana</strong></li>
+              <li>May–Jun: <strong>Trivikrama</strong></li>
+              <li>Jun–Jul: <strong>Vāmana</strong></li>
+              <li>Jul–Aug: <strong>Śrīdhara</strong></li>
+              <li>Aug–Sep: <strong>Hṛṣīkeśa</strong></li>
+              <li>Sep–Oct: <strong>Padmanābha</strong></li>
+              <li>Oct–Nov: <strong>Dāmodara</strong> (month-Deity; distinct from Vraja Dāmodara)</li>
+            </ul>
+          `
+        },
+        {
+          section: "naming",
+          id: "tilaka12",
+          title: "Body tilaka uses the same 12 names",
+          summary: "Vaiṣṇavas name 12 body locations with the same 12 names (forehead = Keśava; others on stomach/chest/arms, etc.).",
+          tags: ["tilaka", "12-names", "practice"],
+          related: ["months12", "forms24-hub"],
+          detailsHTML: `
+            <ul>
+              <li>Forehead tilaka: <strong>Keśava</strong></li>
+              <li>Other body parts (stomach, chest, arms, etc.): the remaining 11 names</li>
+              <li>Same set as the month names</li>
+            </ul>
+          `
+        },
+
+        // 2) 24 forms architecture
+        {
+          section: "forms24",
+          id: "forms24-hub",
+          title: "24 forms of Viṣṇu = 4 + 12 + 8 (vilāsa manifestations)",
+          summary: "The core relationship: 4 original forms + 12 Vaikuṇṭha month-forms + 8 additional vilāsa-mūrtis = 24. Identified by hand-symbol positions.",
+          tags: ["24-forms", "vilasa", "structure"],
+          related: ["forms24-4", "forms24-12", "forms24-8", "symbols4", "vaibhava-examples", "siddhartha-order"],
+          detailsHTML: `
+            <ul>
+              <li><strong>4 original</strong> Viṣṇu forms (prābhava-vilāsa)</li>
+              <li><strong>12 Vaikuṇṭha</strong> forms (months/tilaka)</li>
+              <li><strong>8 vilāsa-mūrtis</strong> expanded from the four</li>
+              <li>Named differently according to <strong>mace/disc/lotus/conch</strong> positions</li>
+              <li>Each has a Vaikuṇṭha planet; some appear in the material world</li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "symbols4",
+          title: "The 4 symbols used to identify forms",
+          summary: "All 24 forms are distinguished by positions of four symbols in four hands.",
+          tags: ["24-forms", "symbols"],
+          related: ["siddhartha-order", "siddhartha-4", "siddhartha-20"],
+          detailsHTML: `
+            <ul>
+              <li>mace/club: <strong>gadā</strong></li>
+              <li>disc: <strong>cakra</strong></li>
+              <li>lotus: <strong>padma</strong></li>
+              <li>conch: <strong>śaṅkha</strong></li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "forms24-4",
+          title: "The 4 original Viṣṇu forms",
+          summary: "Vāsudeva, Saṅkarṣaṇa, Pradyumna, Aniruddha (prābhava-vilāsa forms of Kṛṣṇa).",
+          tags: ["24-forms", "4-original", "vilasa"],
+          related: ["forms24-hub", "forms24-8-map", "svamsa-divisions", "energies3"],
+          detailsHTML: `
+            <ul>
+              <li><strong>Vāsudeva</strong></li>
+              <li><strong>Saṅkarṣaṇa</strong></li>
+              <li><strong>Pradyumna</strong></li>
+              <li><strong>Aniruddha</strong></li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "forms24-12",
+          title: "The 12 Vaikuṇṭha month-forms (names)",
+          summary: "The same 12 names used for months and tilaka.",
+          tags: ["24-forms", "12-names", "months"],
+          related: ["months12", "tilaka12", "siddhartha-20"],
+          detailsHTML: `
+            <ul>
+              <li>Keśava, Nārāyaṇa, Mādhava, Govinda</li>
+              <li>Viṣṇu, Madhusūdana, Trivikrama, Vāmana</li>
+              <li>Śrīdhara, Hṛṣīkeśa, Padmanābha, Dāmodara</li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "forms24-8",
+          title: "8 additional vilāsa-mūrtis (names)",
+          summary: "Expanded from the 4 originals; includes a ‘Kṛṣṇa’ distinct from original Kṛṣṇa.",
+          tags: ["24-forms", "8-vilasa", "vilasa"],
+          related: ["forms24-8-map", "forms24-hub", "vaibhava-examples"],
+          detailsHTML: `
+            <ul>
+              <li>Puruṣottama, Acyuta, Nṛsiṁha, Janārdana</li>
+              <li>Hari, Kṛṣṇa (non-original), Adhokṣaja, Upendra</li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "forms24-8-map",
+          title: "Which 8 come from which of the 4 (relationship map)",
+          summary: "Direct mapping stated in the text (each pair is a vilāsa of one of the four).",
+          tags: ["24-forms", "mapping", "vilasa"],
+          related: ["forms24-4", "forms24-8"],
+          detailsHTML: `
+            <ul>
+              <li>From <strong>Vāsudeva</strong> → <strong>Adhokṣaja</strong>, <strong>Puruṣottama</strong></li>
+              <li>From <strong>Saṅkarṣaṇa</strong> → <strong>Upendra</strong>, <strong>Acyuta</strong></li>
+              <li>From <strong>Pradyumna</strong> → <strong>Nṛsiṁha</strong>, <strong>Janārdana</strong></li>
+              <li>From <strong>Aniruddha</strong> → <strong>Hari</strong>, <strong>Kṛṣṇa</strong> (non-original)</li>
+            </ul>
+          `
+        },
+        {
+          section: "forms24",
+          id: "vaibhava-examples",
+          title: "Vaibhava examples among the 24",
+          summary: "Some of the 24 are called vaibhava forms (different features): Pradyumna, Trivikrama, Vāmana, Hari, Kṛṣṇa (non-original).",
+          tags: ["24-forms", "vaibhava"],
+          related: ["forms24-hub", "forms24-8", "forms24-12"],
+          detailsHTML: `
+            <ul>
+              <li>Examples stated: <strong>Pradyumna</strong>, <strong>Trivikrama</strong>, <strong>Vāmana</strong>, <strong>Hari</strong>, <strong>Kṛṣṇa</strong> (non-original)</li>
+            </ul>
+          `
+        },
+
+        // 3) Scriptures & enumerations
+        {
+          section: "scriptures",
+          id: "siddhartha-order",
+          title: "Siddhārtha-saṁhitā: how to read hand-symbol positions",
+          summary: "Order: lower right → upper right → upper left → lower left.",
+          tags: ["Siddhartha", "symbols", "24-forms"],
+          related: ["symbols4", "siddhartha-4", "siddhartha-20"],
+          detailsHTML: `
+            <ul>
+              <li>Start at <strong>lower right</strong></li>
+              <li>Then <strong>upper right</strong></li>
+              <li>Then <strong>upper left</strong></li>
+              <li>Finally <strong>lower left</strong></li>
+            </ul>
+          `
+        },
+        {
+          section: "scriptures",
+          id: "siddhartha-4",
+          title: "Siddhārtha-saṁhitā: symbol sequences for the 4 originals",
+          summary: "Explicit sequences for Vāsudeva, Saṅkarṣaṇa, Pradyumna, Aniruddha.",
+          tags: ["Siddhartha", "24-forms", "4-original"],
+          related: ["siddhartha-order", "forms24-4"],
+          detailsHTML: `
+            <ul>
+              <li><strong>Vāsudeva</strong>: club, conch, disc, lotus</li>
+              <li><strong>Saṅkarṣaṇa</strong>: club, conch, lotus, disc</li>
+              <li><strong>Pradyumna</strong>: disc, conch, club, lotus</li>
+              <li><strong>Aniruddha</strong>: disc, club, conch, lotus</li>
+            </ul>
+          `
+        },
+        {
+          section: "scriptures",
+          id: "siddhartha-20",
+          title: "Siddhārtha-saṁhitā: 20 Nārāyaṇa-feature forms (symbol sequences)",
+          summary: "The chapter lists 20 forms (including Keśava…Upendra) with the symbol positions.",
+          tags: ["Siddhartha", "24-forms", "Narayana-feature"],
+          related: ["forms24-12", "forms24-8", "symbols4"],
+          detailsHTML: `
+            <div class="detailsBody">
+              <strong>Listed sequences (as given):</strong>
+              <ul>
+                <li>Śrī Keśava: lotus, conch, disc, club</li>
+                <li>Nārāyaṇa: conch, lotus, club, disc</li>
+                <li>Śrī Mādhava: club, disc, conch, lotus</li>
+                <li>Śrī Govinda: disc, club, lotus, conch</li>
+                <li>Viṣṇu-mūrti: club, lotus, conch, disc</li>
+                <li>Madhusūdana: disc, conch, lotus, club</li>
+                <li>Trivikrama: lotus, club, disc, conch</li>
+                <li>Śrī Vāmana: conch, disc, club, lotus</li>
+                <li>Śrīdhara: lotus, disc, club, conch</li>
+                <li>Hṛṣīkeśa: club, disc, lotus, conch</li>
+                <li>Padmanābha: conch, lotus, disc, club</li>
+                <li>Dāmodara: lotus, disc, club, conch</li>
+                <li>Puruṣottama: disc, lotus, conch, club</li>
+                <li>Acyuta: club, lotus, disc, conch</li>
+                <li>Nṛsiṁha: disc, lotus, club, conch</li>
+                <li>Janārdana: lotus, disc, conch, club</li>
+                <li>Śrī Hari: conch, disc, lotus, club</li>
+                <li>Śrī Kṛṣṇa: conch, club, lotus, disc</li>
+                <li>Adhokṣaja: lotus, club, conch, disc</li>
+                <li>Upendra: conch, club, disc, lotus</li>
+              </ul>
+            </div>
+          `
+        },
+        {
+          section: "scriptures",
+          id: "hayasirsa16",
+          title: "Hayaśīrṣa Pañcarātra: 16 forms + key conclusion",
+          summary: "Mentions 16 forms (by symbol positions) and concludes original Supreme Personality is Kṛṣṇa (līlā-puruṣottama; in Vṛndāvana as Nanda’s son).",
+          tags: ["Hayasirsa", "conclusion", "Krsna-original"],
+          related: ["hayasirsa9", "svamsa-divisions"],
+          detailsHTML: `
+            <ul>
+              <li>There are <strong>16 forms</strong> (named by disc etc. positions)</li>
+              <li>Conclusion: the Supreme Original Personality is <strong>Kṛṣṇa</strong></li>
+              <li>He is called <strong>līlā-puruṣottama</strong></li>
+              <li>He resides principally in <strong>Vṛndāvana</strong> as the <strong>son of Nanda</strong></li>
+            </ul>
+          `
+        },
+        {
+          section: "scriptures",
+          id: "hayasirsa9",
+          title: "Hayaśīrṣa Pañcarātra: 9 protectors of Mathurā/Dvārakā Purīs",
+          summary: "Nine forms protect the two Purīs; described as manifestations of prakāśa and vilāsa forms of Kṛṣṇa.",
+          tags: ["Hayasirsa", "protectors", "prakasa-vilasa"],
+          related: ["hayasirsa16", "forms24-4", "sb13-list"],
+          detailsHTML: `
+            <ul>
+              <li>Vāsudeva</li>
+              <li>Saṅkarṣaṇa</li>
+              <li>Pradyumna</li>
+              <li>Aniruddha</li>
+              <li>Nārāyaṇa</li>
+              <li>Nṛsiṁha</li>
+              <li>Hayagrīva</li>
+              <li>Varāha</li>
+              <li>Brahmā</li>
+            </ul>
+          `
+        },
+
+        // 4) Framework
+        {
+          section: "framework",
+          id: "svamsa-divisions",
+          title: "Svāṁśa forms: two divisions (Caitanya → Sanātana)",
+          summary: "Saṅkarṣaṇa division (includes 3 puruṣa-avatāras) vs incarnation division (līlā-avatāras like fish/tortoise).",
+          tags: ["svamsa", "framework"],
+          related: ["purusa3", "lila-category", "six-avatara-types"],
+          detailsHTML: `
+            <ul>
+              <li><strong>Saṅkarṣaṇa division</strong> → includes the 3 puruṣa-avatāras</li>
+              <li><strong>Incarnation division</strong> → includes līlā-avatāras (e.g., Matsya, Kūrma)</li>
+            </ul>
+          `
+        },
+        {
+          section: "framework",
+          id: "six-avatara-types",
+          title: "Six kinds of incarnations (avatāras)",
+          summary: "The chapter explicitly lists 6 categories.",
+          tags: ["avatara-types", "framework"],
+          related: ["purusa3", "sb13-list", "manvantara14", "yuga4", "saktyavesa8", "guna3"],
+          detailsHTML: `
+            <ul>
+              <li>1) puruṣa-avatāras</li>
+              <li>2) līlā-avatāras</li>
+              <li>3) guṇa-avatāras</li>
+              <li>4) manvantara-avatāras</li>
+              <li>5) yuga-avatāras</li>
+              <li>6) śaktyāveśa-avatāras</li>
+            </ul>
+          `
+        },
+        {
+          section: "framework",
+          id: "purusa3",
+          title: "The 3 puruṣa-avatāras (first incarnations; Sātvata-tantra)",
+          summary: "Mahā-Viṣṇu/Kāraṇodakaśāyī, Garbhodakaśāyī, Kṣīrodakaśāyī.",
+          tags: ["purusa", "avatara-types"],
+          related: ["svamsa-divisions", "energies3"],
+          detailsHTML: `
+            <ul>
+              <li>Mahā-Viṣṇu / <strong>Kāraṇodaka-śāyī</strong></li>
+              <li><strong>Garbhodaka-śāyī</strong></li>
+              <li><strong>Kṣīrodaka-śāyī</strong></li>
+            </ul>
+          `
+        },
+        {
+          section: "framework",
+          id: "age2",
+          title: "Age-based divisions mentioned: bālya and paugaṇḍa",
+          summary: "Out of the vilāsa manifestations, two divisions based on age are named; original Kṛṣṇa (son of Nanda) enjoys both.",
+          tags: ["age", "Krsna-original"],
+          related: ["hayasirsa16"],
+          detailsHTML: `
+            <ul>
+              <li><strong>bālya</strong></li>
+              <li><strong>paugaṇḍa</strong></li>
+            </ul>
+          `
+        },
+
+        // 5) Lists
+        {
+          section: "lists",
+          id: "sb13-list",
+          title: "Śrīmad-Bhāgavatam 1.3: 25 līlā-avatāras (kalpa-avatāras)",
+          summary: "The chapter lists 25; notes most appear in one day of Brahmā (kalpa), plus permanence/eternity and vaibhava notes.",
+          tags: ["SB 1.3", "lila", "lists"],
+          related: ["kalpa-note", "not-permanent", "eternal-five", "vaibhava-sb13", "guna3"],
+          detailsHTML: `
+            <ul>
+              <li>Kumāras, Nārada, Varāha, Matsya, Yajña, Nara-Nārāyaṇa, Kapila, Dattātreya, Hayaśīrṣa, Haṁsa</li>
+              <li>Dhruvapriya/Pṛśnigarbha, Ṛṣabha, Pṛthu, Nṛsiṁha, Kūrma, Dhanvantari, Mohinī, Vāmana, Paraśurāma, Rāghavendra</li>
+              <li>Vyāsa, Pralambāri Balarāma, Kṛṣṇa, Buddha, Kalki</li>
+            </ul>
+          `
+        },
+        {
+          section: "lists",
+          id: "kalpa-note",
+          title: "Why ‘kalpa-avatāras’ (as explained here)",
+          summary: "Almost all of the 25 līlā-avatāras appear within one day of Brahmā (a kalpa).",
+          tags: ["SB 1.3", "kalpa"],
+          related: ["sb13-list"],
+          detailsHTML: `<ul><li>“One day of Brahmā” = a <strong>kalpa</strong> (as used in the chapter)</li></ul>`
+        },
+        {
+          section: "lists",
+          id: "not-permanent",
+          title: "Not permanent (from the SB 1.3 list)",
+          summary: "Haṁsa and Mohinī are said to be not permanent.",
+          tags: ["SB 1.3", "classification"],
+          related: ["sb13-list"],
+          detailsHTML: `<ul><li><strong>Haṁsa</strong></li><li><strong>Mohinī</strong></li></ul>`
+        },
+        {
+          section: "lists",
+          id: "eternal-five",
+          title: "Five eternal forms (more celebrated)",
+          summary: "Kapila, Dattātreya, Ṛṣabha, Dhanvantari, Vyāsa.",
+          tags: ["SB 1.3", "classification", "eternal"],
+          related: ["sb13-list", "saktyavesa8"],
+          detailsHTML: `
+            <ul>
+              <li>Kapila</li>
+              <li>Dattātreya</li>
+              <li>Ṛṣabha</li>
+              <li>Dhanvantari</li>
+              <li>Vyāsa</li>
+            </ul>
+          `
+        },
+        {
+          section: "lists",
+          id: "vaibhava-sb13",
+          title: "Vaibhava incarnations noted (in this chapter’s SB 1.3 discussion)",
+          summary: "Kūrma, Matsya, Nara-Nārāyaṇa, Varāha, Hayaśīrṣa, Pṛśnigarbha, Balarāma.",
+          tags: ["SB 1.3", "vaibhava", "classification"],
+          related: ["sb13-list"],
+          detailsHTML: `
+            <ul>
+              <li>Kūrma</li>
+              <li>Matsya</li>
+              <li>Nara-Nārāyaṇa</li>
+              <li>Varāha</li>
+              <li>Hayaśīrṣa</li>
+              <li>Pṛśnigarbha</li>
+              <li>Balarāma</li>
+            </ul>
+          `
+        },
+        {
+          section: "lists",
+          id: "guna3",
+          title: "Three guṇa-avatāras",
+          summary: "Brahmā, Viṣṇu, Śiva.",
+          tags: ["guna", "avatara-types", "lists"],
+          related: ["six-avatara-types", "sb13-list", "hayasirsa9"],
+          detailsHTML: `<ul><li>Brahmā</li><li>Viṣṇu</li><li>Śiva</li></ul>`
+        },
+        {
+          section: "lists",
+          id: "manvantara14",
+          title: "14 manvantara-avatāras (also called vaibhava-avatāras)",
+          summary: "Lists 14; notes Yajña and Vāmana also appear as līlā-avatāras.",
+          tags: ["manvantara", "avatara-types", "lists"],
+          related: ["six-avatara-types", "sb13-list"],
+          detailsHTML: `
+            <ul>
+              <li>Yajña, Vibhu, Satyasena, Hari, Vaikuṇṭha, Ajita, Vāmana</li>
+              <li>Sārvabhauma, Ṛṣabha, Viṣvaksena, Dharmasetu, Sudhāmā, Yogeśvara, Bṛhadbhānu</li>
+              <li><strong>Overlap:</strong> Yajña and Vāmana are also līlā-avatāras</li>
+            </ul>
+          `
+        },
+        {
+          section: "lists",
+          id: "yuga4",
+          title: "Four yuga-avatāras (colors by yuga)",
+          summary: "Satya: white; Tretā: red; Dvāpara: blackish; Kali: blackish; special Kali: yellowish (Caitanya).",
+          tags: ["yuga", "avatara-types", "lists"],
+          related: ["six-avatara-types", "caitanya-special"],
+          detailsHTML: `
+            <ul>
+              <li>Satya-yuga: white</li>
+              <li>Tretā-yuga: red</li>
+              <li>Dvāpara-yuga: blackish</li>
+              <li>Kali-yuga: blackish</li>
+              <li>Special Kali-yuga: yellowish (Caitanya Mahāprabhu)</li>
+            </ul>
+          `
+        },
+        {
+          section: "lists",
+          id: "saktyavesa8",
+          title: "Śaktyāveśa-avatāras (empowered) — examples listed",
+          summary: "Kapila, Ṛṣabha, Ananta, Brahmā (sometimes the Lord becomes Brahmā), Kumāras, Nārada, King Pṛthu, Paraśurāma.",
+          tags: ["saktyavesa", "avatara-types", "lists"],
+          related: ["six-avatara-types", "sb13-list", "spiritual-acting"],
+          detailsHTML: `
+            <ul>
+              <li>Kapila</li>
+              <li>Ṛṣabha</li>
+              <li>Ananta</li>
+              <li>Brahmā (sometimes the Lord Himself becomes Brahmā)</li>
+              <li>Catuḥsana / Kumāras (knowledge)</li>
+              <li>Nārada (devotional service)</li>
+              <li>King Pṛthu (administrative power)</li>
+              <li>Paraśurāma (subdues evil principles)</li>
+            </ul>
+          `
+        },
+
+        // 6) Cosmology / purpose / energies
+        {
+          section: "cosmology",
+          id: "krishnaloka",
+          title: "Spiritual sky: Kṛṣṇaloka (topmost) and its 3 portions",
+          summary: "Kṛṣṇaloka is divided into Gokula, Mathurā, Dvārakā; in the Mathurā portion, Keśava is always situated.",
+          tags: ["cosmology", "Vaikuntha", "Krsnaloka"],
+          related: ["keśava-earth", "distribution-purpose"],
+          detailsHTML: `
+            <ul>
+              <li><strong>Kṛṣṇaloka</strong> (topmost) → <strong>Gokula</strong>, <strong>Mathurā</strong>, <strong>Dvārakā</strong></li>
+              <li>In Mathurā portion: <strong>Keśava</strong> always situated</li>
+              <li>Planets dominated by the <strong>Nārāyaṇa feature</strong> are eternal</li>
+            </ul>
+          `
+        },
+        {
+          section: "cosmology",
+          id: "keśava-earth",
+          title: "Earthly installed forms (examples)",
+          summary: "Keśava in Mathurā; Puruṣottama in Jagannātha Purī; Viṣṇu in Ānandāraṇya; Hari in Māyāpur; many others elsewhere.",
+          tags: ["earth-forms", "cosmology", "places"],
+          related: ["krishnaloka", "months12", "forms24-8"],
+          detailsHTML: `
+            <ul>
+              <li>Keśava mūrti worshiped in <strong>Mathurā</strong> (India)</li>
+              <li>Puruṣottama in <strong>Jagannātha Purī</strong> (Orissa)</li>
+              <li>Viṣṇu in <strong>Ānandāraṇya</strong></li>
+              <li>Hari in <strong>Māyāpur</strong> (Lord Caitanya’s birthplace)</li>
+              <li>Many other forms in various places on earth</li>
+            </ul>
+          `
+        },
+        {
+          section: "cosmology",
+          id: "distribution-purpose",
+          title: "Distribution across universes + why forms appear",
+          summary: "Forms exist across universes; earth ‘seven islands’; currently known in India. Purpose: please devotees everywhere, reestablish devotion, and other divine activities.",
+          tags: ["purpose", "distribution", "devotees"],
+          related: ["krishnaloka", "forms24-hub", "scriptural-incarnations"],
+          detailsHTML: `
+            <ul>
+              <li>Forms distributed in <strong>all universes</strong>, not only this one</li>
+              <li>Earth described as <strong>seven islands</strong> (seven continents)</li>
+              <li>Purpose: pleasure to devotees everywhere; reestablish devotional service; other activities of the Supreme Lord</li>
+            </ul>
+          `
+        },
+        {
+          section: "cosmology",
+          id: "scriptural-incarnations",
+          title: "Examples explicitly mentioned as scriptural incarnations",
+          summary: "The chapter points out: Viṣṇu, Trivikrama, Nṛsiṁha, Vāmana incarnations.",
+          tags: ["incarnation-examples", "purpose"],
+          related: ["distribution-purpose", "forms24-12", "sb13-list"],
+          detailsHTML: `<ul><li>Viṣṇu</li><li>Trivikrama</li><li>Nṛsiṁha</li><li>Vāmana</li></ul>`
+        },
+        {
+          section: "cosmology",
+          id: "energies3",
+          title: "Thinking / feeling / acting energies and corresponding forms",
+          summary: "Thinking → Supreme Lord; feeling → Vāsudeva; acting → Saṅkarṣaṇa Balarāma. Creation requires these; acting energy relates to both worlds.",
+          tags: ["energies", "Vasudeva", "Sankarshana"],
+          related: ["forms24-4", "spiritual-acting", "purusa3"],
+          detailsHTML: `
+            <ul>
+              <li>Thinking energy → Supreme Lord</li>
+              <li>Feeling energy → Lord <strong>Vāsudeva</strong></li>
+              <li>Acting energy → <strong>Saṅkarṣaṇa Balarāma</strong></li>
+              <li>Without these, no possibility of creation</li>
+            </ul>
+          `
+        },
+        {
+          section: "cosmology",
+          id: "spiritual-acting",
+          title: "Spiritual vs material: Brahma-saṁhitā 5.2 + māyā and superintendence",
+          summary: "Goloka described as lotus; Ananta manifests everything. Material nature isn’t the ultimate cause; creation happens under the Lord’s superintendence via Saṅkarṣaṇa (iron/fire analogy).",
+          tags: ["Brahma-samhita", "maya", "superintendence"],
+          related: ["energies3", "saktyavesa8"],
+          detailsHTML: `
+            <ul>
+              <li>Brahma-saṁhitā 5.2: Goloka like a lotus; everything manifested by <strong>Ananta</strong> (form of Balarāma/Saṅkarṣaṇa)</li>
+              <li>Material cosmos appears through <strong>māyā</strong>, but material nature is not the ultimate cause</li>
+              <li>Creation requires superintendence of the Supreme Lord</li>
+              <li>Superintendent form: <strong>Saṅkarṣaṇa</strong></li>
+              <li>Analogy: iron heated by fire becomes red-hot and acts like fire</li>
+            </ul>
+          `
+        },
+        {
+          section: "cosmology",
+          id: "caitanya-special",
+          title: "Special Kali-yuga: yellowish (Caitanya Mahāprabhu)",
+          summary: "In Kali-yuga the incarnation is blackish, but in a special Kali-yuga, yellowish (as in Caitanya’s case).",
+          tags: ["Caitanya", "yuga"],
+          related: ["yuga4", "keśava-earth"],
+          detailsHTML: `<ul><li>Special Kali-yuga: <strong>yellowish</strong> (Caitanya Mahāprabhu)</li></ul>`
+        }
+      ];
+
+      // ========= Rendering =========
+      const bySection = {
+        naming: document.getElementById("sec-naming"),
+        forms24: document.getElementById("sec-forms24"),
+        scriptures: document.getElementById("sec-scriptures"),
+        framework: document.getElementById("sec-framework"),
+        lists: document.getElementById("sec-lists"),
+        cosmology: document.getElementById("sec-cosmology"),
+      };
+
+      const state = {
+        q: "",
+        tagFilters: new Set(),
+      };
+
+      const normalize = (s) => (s || "").toString().toLowerCase();
+      const stripHTML = (html) => {
+        const d = document.createElement("div");
+        d.innerHTML = html || "";
+        return d.textContent || d.innerText || "";
+      };
+
+      function cardText(c) {
+        return normalize([c.title, c.summary, (c.tags || []).join(" "), stripHTML(c.detailsHTML)].join(" "));
+      }
+
+      function makeChip(text, cls, onClick) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = `chip ${cls}`;
+        b.textContent = text;
+        b.addEventListener("click", (e) => {
+          e.stopPropagation();
+          onClick?.();
+        });
+        return b;
+      }
+
+      function renderCard(c) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.id = c.id;
+        card.dataset.text = cardText(c);
+
+        const header = document.createElement("div");
+        header.className = "cardHeader";
+
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = c.title;
+
+        header.appendChild(title);
+
+        const summary = document.createElement("div");
+        summary.className = "summary";
+        summary.textContent = c.summary || "";
+
+        const chips = document.createElement("div");
+        chips.className = "chips";
+
+        // Tag chips (filter)
+        (c.tags || []).forEach(t => {
+          const chip = makeChip(`#${t}`, "tag", () => toggleTag(t));
+          chips.appendChild(chip);
+        });
+
+        // Related chips (jump)
+        if (c.related?.length) {
+          c.related.forEach(rid => {
+            const chip = makeChip(`Related: ${rid}`, "rel", () => jumpTo(rid));
+            chip.dataset.rel = rid;
+            chips.appendChild(chip);
+          });
+        }
+
+        const details = document.createElement("details");
+        const summaryEl = document.createElement("summary");
+        summaryEl.textContent = "Details";
+        const body = document.createElement("div");
+        body.className = "detailsBody";
+        body.innerHTML = c.detailsHTML || "<div class='detailsBody'>No details.</div>";
+        details.appendChild(summaryEl);
+        details.appendChild(body);
+
+        card.appendChild(header);
+        card.appendChild(summary);
+        if (chips.childElementCount) card.appendChild(chips);
+        card.appendChild(details);
+
+        return card;
+      }
+
+      function renderAll() {
+        Object.values(bySection).forEach(el => el.innerHTML = "");
+        CARDS.forEach(c => bySection[c.section].appendChild(renderCard(c)));
+        applyFilters();
+        reflectActiveFilters();
+      }
+
+      // ========= Filtering =========
+      function applyFilters() {
+        const q = normalize(state.q).trim();
+        const tags = state.tagFilters;
+
+        document.querySelectorAll(".card").forEach(card => {
+          card.classList.remove("hit", "focused");
+
+          const text = card.dataset.text || "";
+          const matchesQ = !q || text.includes(q);
+
+          // tag match: card must contain ALL selected tags
+          let matchesTags = true;
+          if (tags.size) {
+            const own = new Set();
+            card.querySelectorAll(".chip.tag").forEach(ch => {
+              const t = ch.textContent.replace(/^#/, "");
+              own.add(t);
+            });
+            for (const t of tags) {
+              if (!own.has(t)) { matchesTags = false; break; }
+            }
+          }
+
+          const show = matchesQ && matchesTags;
+          card.classList.toggle("hidden", !show);
+          if (show && q && text.includes(q)) card.classList.add("hit");
+        });
+      }
+
+      function reflectActiveFilters() {
+        const el = document.getElementById("activeFilters");
+        const parts = [];
+        if (state.q.trim()) parts.push(`Search: “${state.q.trim()}”`);
+        if (state.tagFilters.size) parts.push(`Tags: ${Array.from(state.tagFilters).map(t => `#${t}`).join(", ")}`);
+        el.textContent = parts.length ? `Active filters — ${parts.join(" | ")}` : "";
+      }
+
+      function toggleTag(tag) {
+        if (state.tagFilters.has(tag)) state.tagFilters.delete(tag);
+        else state.tagFilters.add(tag);
+        applyFilters();
+        reflectActiveFilters();
+      }
+
+      // ========= Navigation (related jump) =========
+      function jumpTo(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // open details for context
+        const details = target.querySelector("details");
+        if (details) details.open = true;
+
+        target.classList.add("focused");
+        setTimeout(() => target.classList.remove("focused"), 1600);
+      }
+
+      // ========= Controls =========
+      document.getElementById("expandAll").addEventListener("click", () => {
+        document.querySelectorAll("details").forEach(d => d.open = true);
+      });
+      document.getElementById("collapseAll").addEventListener("click", () => {
+        document.querySelectorAll("details").forEach(d => d.open = false);
+      });
+      document.getElementById("clearAll").addEventListener("click", () => {
+        state.q = "";
+        state.tagFilters.clear();
+        document.getElementById("search").value = "";
+        applyFilters();
+        reflectActiveFilters();
+      });
+
+      document.getElementById("search").addEventListener("input", (e) => {
+        state.q = e.target.value || "";
+        applyFilters();
+        reflectActiveFilters();
+      });
+
+      // Initial render
+      renderAll();
+    </script>
+  </body>
+</html>
